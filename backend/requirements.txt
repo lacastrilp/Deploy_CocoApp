@@ -5,6 +5,9 @@ influxdb-client
 python-dotenv
 gunicorn
 sqlalchemy
-
-
-
+supabase
+shapely
+numpy
+pandas
+geopandas
+scikit-learn
