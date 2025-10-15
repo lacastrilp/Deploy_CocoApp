@@ -24,74 +24,101 @@ const Button: React.FC<ButtonProps> = ({
   disabled,
   ...props
 }) => {
-  const sizeClasses = {
-    sm: 'px-4 py-2 text-sm',
-    md: 'px-6 py-3 text-base',
-    lg: 'px-8 py-4 text-lg'
-  };
 
-  const getColorStyles = (color: string, variant: string) => {
-    const styles = {
-      green: {
-        primary: {
+
+  type Color = NonNullable<ButtonProps['color']>;
+  // Internal variants we support in the styles mapping
+  type InternalVariant = 'primary' | 'outline';
+
+  type HoverStyle = { ':hover'?: React.CSSProperties };
+
+  const styles: Record<Color, Record<InternalVariant, React.CSSProperties & HoverStyle>> = {
+    green: {
+      primary: {
+        backgroundColor: 'var(--primary-green)',
+        color: 'white',
+        border: 'none',
+        ':hover': {
+          backgroundColor: 'var(--primary-green-hover)'
+        }
+      },
+      outline: {
+        backgroundColor: 'transparent',
+        color: 'var(--primary-green)',
+        border: '2px solid var(--primary-green)',
+        ':hover': {
           backgroundColor: 'var(--primary-green)',
-          color: 'white',
-          border: 'none',
-          ':hover': {
-            backgroundColor: 'var(--primary-green-hover)'
-          }
-        },
-        outline: {
-          backgroundColor: 'transparent',
-          color: 'var(--primary-green)',
-          border: '2px solid var(--primary-green)',
-          ':hover': {
-            backgroundColor: 'var(--primary-green)',
-            color: 'white'
-          }
-        }
-      },
-      blue: {
-        primary: {
-          backgroundColor: 'var(--accent-blue)',
-          color: 'white',
-          border: 'none',
-          ':hover': {
-            backgroundColor: 'var(--accent-blue-hover)'
-          }
-        },
-        outline: {
-          backgroundColor: 'transparent',
-          color: 'var(--accent-blue)',
-          border: '2px solid var(--accent-blue)',
-          ':hover': {
-            backgroundColor: 'var(--accent-blue)',
-            color: 'white'
-          }
-        }
-      },
-      red: {
-        primary: {
-          backgroundColor: 'var(--error)',
-          color: 'white',
-          border: 'none',
-          ':hover': {
-            backgroundColor: '#dc2626'
-          }
-        },
-        outline: {
-          backgroundColor: 'transparent',
-          color: 'var(--error)',
-          border: '2px solid var(--error)',
-          ':hover': {
-            backgroundColor: 'var(--error)',
-            color: 'white'
-          }
+          color: 'white'
         }
       }
-    };
-    
-    return styles[color]?.[variant] || styles.blue.primary;
+    },
+    blue: {
+      primary: {
+        backgroundColor: 'var(--accent-blue)',
+        color: 'white',
+        border: 'none',
+        ':hover': {
+          backgroundColor: 'var(--accent-blue-hover)'
+        }
+      },
+      outline: {
+        backgroundColor: 'transparent',
+        color: 'var(--accent-blue)',
+        border: '2px solid var(--accent-blue)',
+        ':hover': {
+          backgroundColor: 'var(--accent-blue)',
+          color: 'white'
+        }
+      }
+    },
+    red: {
+      primary: {
+        backgroundColor: 'var(--error)',
+        color: 'white',
+        border: 'none',
+        ':hover': {
+          backgroundColor: '#dc2626'
+        }
+      },
+      outline: {
+        backgroundColor: 'transparent',
+        color: 'var(--error)',
+        border: '2px solid var(--error)',
+        ':hover': {
+          backgroundColor: 'var(--error)',
+          color: 'white'
+        }
+      }
+    }
+    ,
+    // gray maps to same styles as blue by default
+    gray: {
+      primary: {
+        backgroundColor: 'var(--accent-blue)',
+        color: 'white',
+        border: 'none',
+        ':hover': {
+          backgroundColor: 'var(--accent-blue-hover)'
+        }
+      },
+      outline: {
+        backgroundColor: 'transparent',
+        color: 'var(--accent-blue)',
+        border: '2px solid var(--accent-blue)',
+        ':hover': {
+          backgroundColor: 'var(--accent-blue)',
+          color: 'white'
+        }
+      }
+    }
+  };
+
+  const getColorStyles = (c: Color | undefined, v: ButtonProps['variant'] | undefined) => {
+    const colorKey: Color = (c || 'blue') as Color;
+    // Map external variants to the internal variants we support
+    const variantKey: InternalVariant = v === 'outline' ? 'outline' : 'primary';
+
+    return styles[colorKey]?.[variantKey] ?? styles.blue.primary;
   };
 
   const sizeStyles = {
